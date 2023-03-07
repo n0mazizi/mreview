@@ -19,6 +19,6 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     @Query("select m, mi, avg(coalesce(r.grade, 0)), count(r) from Movie m " +
             "left outer join MovieImage mi on mi.movie = m " +
             "left outer join Review r on r.movie = m " +
-            "where m.mno = :mno group by mi")
+            "where m.mno = :mno group by mi") //영화 이미지별로 그룹을 만들어서 영와 이미지들의 개수만큼 데이터를 만들어 냄
     List<Object[]> getMovieWithAll(Long mno);  //특정 영화 조회
 }
