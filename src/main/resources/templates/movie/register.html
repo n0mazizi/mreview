@@ -78,26 +78,6 @@
           return true;
         }
 
-
-/*
-        function showResult(uploadResultArr){
-            var uploadUL=$(".uploadResult ul");
-            var str="";
-
-            $(uploadResultArr).each(function(i, obj){
-              str += "<li data-name='" + obj.fileName + "' data-path='" + obj.folderPath+"' data-uuid='" + obj.uuid"'>";
-              str += "  <div>";
-              str += "    <button type='button' data-file=\'"+obj.imageURL + "\' " + "class='btn-warning btn-sm'>X</button><br>";
-              str += "    <img src='/display?fileName=" + obj.thumbnailURL + "'>";
-              str += "  </div>";
-              str += "</li>";
-            });
-
-            uploadUL.append(str);
-          };
-
-*/
-
         function showResult(uploadResultArr){
 
           var uploadUL = $(".uploadResult ul");
@@ -168,6 +148,50 @@
             }
           })// end ajax
         }); //end change event
+
+
+        $(".uploadResult").on("click", "li button", function(e){
+          console.log("delete file");
+
+          var targetFile=$(this).data("file");
+          var targetLi=$(this).closest("li");
+
+          $.ajax({
+            url: '/removeFile',
+            data: {fileName: targetFile},
+            dataType: 'text',
+            type: 'POST',
+            success: function(result){
+              alert(result);
+              targetLi.remove();
+            }
+          }); //end ajax
+        }); //end uploadResult
+
+
+        //prevent submit
+        $(".btn-primary").on("click", function(e){
+          console.log("submit");
+          e.preventDefault();
+
+          var str="";
+
+          $(".uploadResult li").each(function(i, obj){
+            var target = $(obj);
+
+            str += "<input type='hidden' name='imageDTOList["+i+"].imgName' value='"+target.data('name')+"'>";
+            str += "<input type='hidden' name='imageDTOList["+i+"].path' value='"+target.data('path')+"'>";
+            str += "<input type='hidden' name='imageDTOList["+i+"].uuid' value='"+target.data('uuid')+"'>";
+          });
+
+          //태그들이 추가된 것을 확인한 후에 comment 제거
+          $(".box").html(str);
+
+          //$("form").submit();
+        }); //end btn-primary
+
+
+
 
       }); // document ready
     </script>
